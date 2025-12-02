@@ -17,8 +17,9 @@ class SeptaConfigFlow(ConfigFlow, domain=DOMAIN):
     async def async_step_user(self, user_input: dict[str, Any] | None = None) -> FlowResult:
         await self.async_set_unique_id("septa_status_listener")
         self._abort_if_unique_id_configured()
+        self._errors = {}
 
-        if user_input is not None:
+        if user_input is None:
             return self.async_show_form(step_id='user', data_schema=vol.Schema({
                 vol.Required("interval", default=30): int
             }), errors=self._errors)
