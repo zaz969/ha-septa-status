@@ -8,6 +8,9 @@
                 }
             }
         },
+        "error" : {
+            "invalid_input": "A value greater than or equal to 5 has to be entered."
+        },
         "abort" : {
             "already_configured": "Another instance of the SEPTA Status Integration has already been initialized"
         }

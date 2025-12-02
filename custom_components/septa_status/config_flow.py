@@ -22,13 +22,13 @@ class SeptaConfigFlow(ConfigFlow, domain=DOMAIN):
         if user_input is None:
             return self.async_show_form(step_id='user', data_schema=vol.Schema({
                 vol.Required("interval", default=30): int
-            }), errors=self._errors)
+            }))
         else:
-            valid = user_input is not None and user_input["interval"] >= MIN_TIME_BETWEEN_UPDATES
+            valid = user_input["interval"] >= MIN_TIME_BETWEEN_UPDATES
             if valid:
                 return self.async_create_entry(title=TITLE, data=user_input)
-            else: self._errors["base"] = "invalid_input"
-
-            return self.async_show_form(step_id='user', data_schema=vol.Schema({
-                vol.Required("interval", default=30): int
-            }), errors=self._errors)
+            else:
+                self._errors["base"] = "invalid_input"
+                return self.async_show_form(step_id='user', data_schema=vol.Schema({
+                    vol.Required("interval", default=30): int
+                }), errors=self._errors)
