@@ -1,0 +1,14 @@
+{
+    "config": {
+        "step": {
+            "init": {
+                "title": "SEPTA Status Integration",
+                "data": {
+                    "interval": "Enter the polling interval (in minutes) to refresh data from SEPTA (Cannot be less than 5)"
+                }
+            },
+            "finalize": {
+                "title": "SEPTA Status Integration"
+            }
+    }
+}
