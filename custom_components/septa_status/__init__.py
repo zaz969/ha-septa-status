@@ -1,8 +1,10 @@
 from dataclasses import dataclass
+from typing import Callable
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 from .const import DOMAIN
 from .coordinator import SeptaStatusCoordinator
