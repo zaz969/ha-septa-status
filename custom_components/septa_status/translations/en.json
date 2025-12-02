@@ -1,15 +1,15 @@
 {
     "config": {
         "step": {
-            "init": {
+            "user": {
                 "title": "SEPTA Status Integration",
                 "data": {
                     "interval": "Enter the polling interval (in minutes) to refresh data from SEPTA (Cannot be less than 5)"
                 }
-            },
-            "finalize": {
-                "title": "SEPTA Status Integration"
             }
+        },
+        "abort" : {
+            "already_configured": "Another instance of the SEPTA Status Integration has already been initialized"
         }
     }
 }
