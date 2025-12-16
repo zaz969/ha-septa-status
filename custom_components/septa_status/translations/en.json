@@ -4,7 +4,7 @@
             "user": {
                 "title": "SEPTA Status Integration",
                 "data": {
-                    "interval": "Enter the polling interval (in minutes) to refresh data from SEPTA (Cannot be less than 5)"
+                    "interval": "Enter polling interval (m) to get data from SEPTA (>= 5)"
                 }
             }
         },
