@@ -4,6 +4,6 @@
     "codeowners": ["@zaz969"],
     "config_flow": true,
     "documentation": "https://github.com/zaz969/ha-septa-status",
-    "version": "0.0.0",
+    "version": "0.0.1",
     "issue_tracker": "https://github.com/zaz969/ha-septa-status/issues"
 }
