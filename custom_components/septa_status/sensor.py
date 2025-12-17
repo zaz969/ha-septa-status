@@ -1,37 +1,69 @@
 """Platform for sensor integration."""
 from __future__ import annotations
 
-from homeassistant.components.sensor import (
-    SensorDeviceClass,
-    SensorEntity,
-    SensorStateClass,
-)
-from homeassistant.const import UnitOfTemperature
+from homeassistant.components.sensor import SensorEntity
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
+
+from .const import DOMAIN
+from .coordinator import SeptaStatusCoordinator
+
+import logging
+_LOGGER = logging.getLogger(__name__)
 
 
-def setup_platform(
-        hass: HomeAssistant,
-        config: ConfigType,
-        add_entities: AddEntitiesCallback,
-        discovery_info: DiscoveryInfoType | None = None
+async def async_setup_entry(
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up the sensor platform."""
-    add_entities([SeptaSensor()])
+    """Set up the sensor platform from a config entry."""
+    coordinator: SeptaStatusCoordinator = hass.data[DOMAIN][config_entry.entry_id].coordinator
+
+    # Create 5 bus status entities and 5 delayed status entities
+    entities = []
+    for bus in coordinator.data.buses:
+        entities.append(BusStatusSensor(coordinator, bus.bus_id))
+        entities.append(BusDelayedSensor(coordinator, bus.bus_id))
+
+    async_add_entities(entities)
 
 
-class SeptaSensor(SensorEntity):
+class BusStatusSensor(CoordinatorEntity, SensorEntity):
+    """Sensor for displaying bus status message."""
 
-    _attr_name = "Example Temperature"
-    _attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
-    _attr_device_class = SensorDeviceClass.TEMPERATURE
-    _attr_state_class = SensorStateClass.MEASUREMENT
+    def __init__(self, coordinator: SeptaStatusCoordinator, bus_id: int) -> None:
+        """Initialize the sensor."""
+        super().__init__(coordinator)
+        self.bus_id = bus_id
+        self._attr_unique_id = f"septa_bus_{bus_id}_status"
+        self._attr_name = f"Bus {bus_id} Status"
 
-    def update(self) -> None:
-        """Fetch new state data for the sensor.
+    @property
+    def native_value(self) -> str:
+        """Return the current bus status message."""
+        for bus in self.coordinator.data.buses:
+            if bus.bus_id == self.bus_id:
+                return bus.status_message
+        return "Unknown"
 
-        This is the only method that should fetch new data for Home Assistant.
-        """
-        self._attr_native_value = 23
+
+class BusDelayedSensor(CoordinatorEntity, SensorEntity):
+    """Sensor for displaying bus delayed status."""
+
+    def __init__(self, coordinator: SeptaStatusCoordinator, bus_id: int) -> None:
+        """Initialize the sensor."""
+        super().__init__(coordinator)
+        self.bus_id = bus_id
+        self._attr_unique_id = f"septa_bus_{bus_id}_delayed"
+        self._attr_name = f"Bus {bus_id} Delayed"
+
+    @property
+    def native_value(self) -> str:
+        """Return the bus delayed status (Yes/No)."""
+        for bus in self.coordinator.data.buses:
+            if bus.bus_id == self.bus_id:
+                return "Yes" if bus.is_delayed else "No"
+        return "Unknown"
