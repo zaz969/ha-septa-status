@@ -6,6 +6,8 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 from .const import DOMAIN, NUM_BUSES
+from .api import SEPTAStatusAPI
+from .parser import parse_septa_alerts
 
 import logging
 _LOGGER = logging.getLogger(__name__)
@@ -50,6 +52,12 @@ class SeptaStatusCoordinator(DataUpdateCoordinator):
         This is where you'll call your API to get the actual bus statuses.
         For now, it returns the default data structure.
         """
+
+        septa_api = SEPTAStatusAPI(self.hass)
+        data = await septa_api.fetch_bus_alerts()
+        parse_septa_alerts(data)
+        
+
         # TODO: Replace with actual API call to fetch bus statuses
         # Example:
         # data = await self._fetch_from_api()

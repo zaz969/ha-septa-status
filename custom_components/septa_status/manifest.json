@@ -5,6 +5,5 @@
     "config_flow": true,
     "documentation": "https://github.com/zaz969/ha-septa-status",
     "version": "0.0.0",
-    "issue_tracker": "https://github.com/zaz969/ha-septa-status/issues",
-    "requirements": ["aiohttp"]
+    "issue_tracker": "https://github.com/zaz969/ha-septa-status/issues"
 }
